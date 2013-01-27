@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="10dp">
+
+    <TextView
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="于明龙"
+            android:textColor="#222222"
+            android:textSize="18dp"
+            android:id="@+id/lbl_name" android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="yuml"
+            android:textColor="#222222"
+            android:id="@+id/lbl_nt_account"    android:textSize="13dp"
+            android:layout_alignParentTop="true" android:layout_marginTop="5dp" android:layout_toRightOf="@id/lbl_name"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"   android:textSize="13dp"
+            android:text=" / "    android:layout_marginTop="5dp"    android:layout_alignParentTop="true"
+            android:id="@+id/lbl_split"   android:layout_toRightOf="@id/lbl_nt_account"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"   android:textSize="13dp"  android:textColor="#222222"
+            android:text="14389"    android:layout_marginTop="5dp"    android:layout_alignParentTop="true"
+            android:id="@+id/lbl_employee_id"   android:layout_toRightOf="@id/lbl_split"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="13952097497" android:textSize="16dp"
+            android:phoneNumber="true"  android:autoLink="phone" android:textColorLink="#666666"
+            android:id="@+id/lbl_mobile"  android:layout_marginRight="5dp"
+            android:layout_alignParentTop="true" android:layout_alignParentRight="true"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#666666"           android:textSize="16dp"
+            android:text="CRM SRD-GZ Technical Architect Dept." android:layout_marginTop="6dp"
+            android:id="@+id/lbl_dept_name"  android:layout_below="@id/lbl_name"/>
+</RelativeLayout>
