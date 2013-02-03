@@ -30,7 +30,7 @@ public class Detail extends BaseActivity {
     private TextView parentEmployeeTextView;
     private TextView otherTextView;
 
-    ProgressDialog dialog;
+    private ProgressDialog dialog;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

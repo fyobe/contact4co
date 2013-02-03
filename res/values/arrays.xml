@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="condition_name">
+        <item>NT域帐号</item>
+        <item>员工姓名</item>
+        <item>员工编号</item>
+        <item>手机号码</item>
+        <item>部门名称</item>
+        <item>分机号码</item>
+    </string-array>
+    <string-array name="condition_value">
+        <item>EI.NT_ACCOUNT</item>
+        <item>EI.LAST_NAME</item>
+        <item>EI.EMPLOYEE_NUMBER</item>
+        <item>EI.MOBILE</item>
+        <item>EI.ORG_NAME</item>
+        <item>EI.OFFICE</item>
+    </string-array>
+</resources>

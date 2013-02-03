@@ -3,6 +3,7 @@ package com.vouov.ailk.app.ui;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -23,12 +24,15 @@ import java.util.List;
  */
 public class Search extends BaseActivity implements AbsListView.OnScrollListener {
     private static final String TAG = "ailk_ui_search";
+    private Spinner conditionSpinner;
     private EditText conditionText;
     private Button searchButton;
     private ListView resultListView;
     private SearchResultAdapter listAdapter;
     private Pagination<Employee> pagination;
     private View footerView;
+    private String lastColumnName;
+    private String columnName="";
     private String condition;
     private LinearLayout searchHeader;
 
@@ -39,16 +43,39 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
+        conditionSpinner = (Spinner) findViewById(R.id.spi_condition);
         conditionText = (EditText) findViewById(R.id.txt_condition);
         searchHeader = (LinearLayout) findViewById(R.id.search_header);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.condition_name, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        conditionSpinner.setAdapter(adapter);
+        conditionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                columnName = getResources().getStringArray(R.array.condition_value)[position];
+                TextView tv = (TextView)view;
+                tv.setTextSize(12.0f);    //设置大小
+                tv.setGravity(Gravity.LEFT);   //设置居中
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         searchButton = (Button) findViewById(R.id.btn_search);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String text = conditionText.getText().toString();
-                if (text != null && !"".equals(text)) {
+                if ((text != null && !"".equals(text)) || !columnName.equals(lastColumnName)) {
                     if (!text.equals(condition)) {
                         isLoading = true;
+                        lastColumnName = columnName;
                         condition = text;
                         listAdapter.getEmployees().clear();
                         listAdapter.notifyDataSetChanged();
@@ -137,7 +164,7 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
             if (pagination != null) pagination.setCurrentPage(integers[0]);
             Pagination<Employee> result = null;
             try {
-                result = AppApiClient.queryContacts(condition, integers[0]);
+                result = AppApiClient.queryContacts(columnName, condition, integers[0]);
             } catch (Exception e) {
                 result = new Pagination<Employee>();
                 Log.e(TAG, e.getMessage(), e);

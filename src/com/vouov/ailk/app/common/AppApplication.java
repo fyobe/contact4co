@@ -1,7 +1,8 @@
-package com.vouov.ailk.app.config;
+package com.vouov.ailk.app.common;
 
 import android.app.Application;
 import com.vouov.ailk.app.api.AppApiClient;
+import com.vouov.ailk.app.model.Employee;
 
 /**
  * User: yuml
@@ -12,13 +13,14 @@ public class AppApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        setUserName("ailk\\yuml");
-        setPassword("Long1234");
+//        setUserName("ailk\\yuml");
+//        setPassword("Long1234");
         AppApiClient.init(this);
     }
 
     private String userName;
     private String password;
+    private Employee userInfo;
 
     public String getUserName() {
         return userName;
@@ -36,5 +38,11 @@ public class AppApplication extends Application {
         this.password = password;
     }
 
+    public Employee getUserInfo() {
+        return userInfo;
+    }
 
+    public void setUserInfo(Employee userInfo) {
+        this.userInfo = userInfo;
+    }
 }

@@ -4,7 +4,7 @@
           android:versionCode="1"
           android:versionName="1.0">
     <uses-sdk android:minSdkVersion="4"/>
-    <application android:label="@string/app_name" android:icon="@drawable/ailk_logo" android:name=".config.AppApplication" android:theme="@android:style/Theme.Light">
+    <application android:label="@string/app_name" android:icon="@drawable/ailk_logo" android:name=".common.AppApplication" android:theme="@android:style/Theme.Light">
         <activity android:name=".ui.AppStart"
                   android:label="@string/app_name">
             <intent-filter>
@@ -12,12 +12,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.Home"/>
         <activity android:name=".ui.Search"/>
         <activity android:name=".ui.Login"/>
         <activity android:name=".ui.Detail"/>
         <activity android:name=".ui.About"/>
-        <activity android:name=".ui.Help"/>
         <activity android:name=".ui.Setting"/>
         <activity android:name=".ui.Favorite"/>
         <activity android:name=".ui.About"/>

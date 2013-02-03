@@ -3,6 +3,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent" android:gravity="center_horizontal" android:paddingTop="50dp" android:paddingLeft="50dp" android:paddingRight="50dp">
+
+
+    <ImageView
+            android:layout_width="194dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ailk_logo_big"
+            android:layout_gravity="center" android:layout_marginBottom="30dp"/>
+    <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:stretchColumns="1">
+
+        <TableRow>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="帐号" android:textSize="18dp"/>
+            <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:singleLine="true"
+                    android:id="@+id/txt_account"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:text="密码"/>
+            <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:inputType="textPassword"
+                    android:text=""
+                    android:id="@+id/txt_password"/>
+        </TableRow>
+    </TableLayout>
+    <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="登录" android:textSize="20dp"
+            android:id="@+id/btn_submit"/>
+    <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:stretchColumns="0">
+        <TableRow android:gravity="center">
+            <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="记住密码"
+                    android:id="@+id/cb_remember_pass"/>
+            <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="自动登录"
+                    android:id="@+id/cb_auto_submit"/>
+        </TableRow>
+    </TableLayout>
 
 </LinearLayout>

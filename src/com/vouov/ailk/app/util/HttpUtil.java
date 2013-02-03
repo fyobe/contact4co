@@ -1,7 +1,7 @@
 package com.vouov.ailk.app.util;
 
+import com.vouov.ailk.app.common.AppApplication;
 import com.vouov.ailk.app.common.AppException;
-import com.vouov.ailk.app.config.AppApplication;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -10,7 +10,6 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -72,15 +71,4 @@ public class HttpUtil {
 
     }
 
-    public static boolean basicAuthorize(String url, String userName, String password) throws IOException, AppException {
-        HttpGet get = new HttpGet(url);
-        HttpResponse response = getHttpClient(userName, password).execute(get);
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-            return true;
-        } else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
-            return false;
-        } else {
-            throw new AppException("验证用户权限的路径不能正确响应");
-        }
-    }
 }
