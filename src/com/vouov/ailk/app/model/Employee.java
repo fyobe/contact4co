@@ -1,6 +1,10 @@
 package com.vouov.ailk.app.model;
 
+import com.vouov.ailk.app.db.Column;
+import com.vouov.ailk.app.db.EmployeeInfoDatabase;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * User: yuml
@@ -8,17 +12,42 @@ import java.io.Serializable;
  * Time: 下午8:40
  */
 public class Employee implements Serializable {
+    @Column(EmployeeInfoDatabase.Employee._ID)
+    private long _id;
+    @Column(EmployeeInfoDatabase.Employee.NAME)
     private String name;
+    @Column(EmployeeInfoDatabase.Employee.ID)
     private String id;
+    @Column(EmployeeInfoDatabase.Employee.ACCOUNT)
     private String account;
+    @Column(EmployeeInfoDatabase.Employee.DEPT_NAME)
     private String deptName;
+    @Column(EmployeeInfoDatabase.Employee.MOBILE)
     private String mobile;
+    @Column(EmployeeInfoDatabase.Employee.OFFICE_PHONE)
     private String officePhone;
+    @Column(EmployeeInfoDatabase.Employee.HOME_CITY)
     private String homeCity;
+    @Column(EmployeeInfoDatabase.Employee.EMAIL)
     private String email;
+    @Column(EmployeeInfoDatabase.Employee.PARENT_EMPLOYEE_ID)
     private String parentEmployeeId;
+    @Column(EmployeeInfoDatabase.Employee.PARENT_EMPLOYEE_NAME)
     private String parentEmployeeName;
+    @Column(EmployeeInfoDatabase.Employee.DESCRIPTION)
     private String desc;
+    @Column(EmployeeInfoDatabase.Employee.UPDATE_TIME)
+    private Date updateTime;
+    @Column(EmployeeInfoDatabase.Employee.IS_FAVORITE)
+    private boolean favorite;
+
+    public long get_id() {
+        return _id;
+    }
+
+    public void set_id(long _id) {
+        this._id = _id;
+    }
 
     public String getName() {
         return name;
@@ -106,5 +135,21 @@ public class Employee implements Serializable {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }

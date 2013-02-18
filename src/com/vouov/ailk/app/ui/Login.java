@@ -25,21 +25,20 @@ public class Login extends Activity {
     private static final String TAG = "ailk_login";
     private EditText accountText;
     private EditText passwordText;
-    private Button submitButton;
     private CheckBox rememberCheckBox;
     private CheckBox autoSubmitCheckBox;
 
     private String account;
     private String password;
 
-    ProgressDialog dialog;
+    private ProgressDialog dialog;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         accountText = (EditText) findViewById(R.id.txt_account);
         passwordText = (EditText) findViewById(R.id.txt_password);
-        submitButton = (Button) findViewById(R.id.btn_submit);
+        Button submitButton = (Button) findViewById(R.id.btn_submit);
         rememberCheckBox = (CheckBox) findViewById(R.id.cb_remember_pass);
         autoSubmitCheckBox = (CheckBox) findViewById(R.id.cb_auto_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +61,10 @@ public class Login extends Activity {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
-                        dialog = ProgressDialog.show(Login.this, null, "正在登录...", true);
+                        if (dialog == null)
+                            dialog = ProgressDialog.show(Login.this, null, "正在登录...", true);
+                        else
+                            dialog.show();
                     }
 
                     @Override
@@ -74,6 +76,8 @@ public class Login extends Activity {
                             appApplication.setUserName(account);
                             appApplication.setPassword(password);
                             appApplication.setUserInfo(employee);
+                            dialog.dismiss();
+                            dialog = null;
                             Intent intent = new Intent(Login.this, Search.class);
                             Login.this.startActivity(intent);
                             Login.this.finish();
@@ -96,5 +100,8 @@ public class Login extends Activity {
                 }.execute();
             }
         });
+
+        //值回填和自动登录判断
+        submitButton.performClick();
     }
 }

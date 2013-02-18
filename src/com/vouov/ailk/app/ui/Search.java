@@ -11,6 +11,7 @@ import android.widget.*;
 import com.vouov.ailk.app.R;
 import com.vouov.ailk.app.adapter.SearchResultAdapter;
 import com.vouov.ailk.app.api.AppApiClient;
+import com.vouov.ailk.app.api.AppLocalApiClient;
 import com.vouov.ailk.app.model.Employee;
 import com.vouov.ailk.app.model.Pagination;
 
@@ -24,15 +25,12 @@ import java.util.List;
  */
 public class Search extends BaseActivity implements AbsListView.OnScrollListener {
     private static final String TAG = "ailk_ui_search";
-    private Spinner conditionSpinner;
     private EditText conditionText;
-    private Button searchButton;
-    private ListView resultListView;
     private SearchResultAdapter listAdapter;
     private Pagination<Employee> pagination;
     private View footerView;
     private String lastColumnName;
-    private String columnName="";
+    private String columnName = "";
     private String condition;
     private LinearLayout searchHeader;
 
@@ -43,7 +41,7 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
-        conditionSpinner = (Spinner) findViewById(R.id.spi_condition);
+        Spinner conditionSpinner = (Spinner) findViewById(R.id.spi_condition);
         conditionText = (EditText) findViewById(R.id.txt_condition);
         searchHeader = (LinearLayout) findViewById(R.id.search_header);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -57,7 +55,7 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 columnName = getResources().getStringArray(R.array.condition_value)[position];
-                TextView tv = (TextView)view;
+                TextView tv = (TextView) view;
                 tv.setTextSize(12.0f);    //设置大小
                 tv.setGravity(Gravity.LEFT);   //设置居中
             }
@@ -67,13 +65,13 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
 
             }
         });
-        searchButton = (Button) findViewById(R.id.btn_search);
+        Button searchButton = (Button) findViewById(R.id.btn_search);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String text = conditionText.getText().toString();
-                if ((text != null && !"".equals(text)) || !columnName.equals(lastColumnName)) {
-                    if (!text.equals(condition)) {
+                if ((text != null && !"".equals(text))) {
+                    if (!text.equals(condition) || !columnName.equals(lastColumnName)) {
                         isLoading = true;
                         lastColumnName = columnName;
                         condition = text;
@@ -87,7 +85,7 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
                 }
             }
         });
-        resultListView = (ListView) findViewById(R.id.list_search_result);
+        ListView resultListView = (ListView) findViewById(R.id.list_search_result);
         listAdapter = new SearchResultAdapter(this, new ArrayList<Employee>());
         footerView = getLayoutInflater().inflate(R.layout.loading_footer, null);
         resultListView.addFooterView(footerView);
@@ -162,9 +160,12 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
         @Override
         protected List<Employee> doInBackground(Integer... integers) {
             if (pagination != null) pagination.setCurrentPage(integers[0]);
-            Pagination<Employee> result = null;
+            Pagination<Employee> result;
             try {
                 result = AppApiClient.queryContacts(columnName, condition, integers[0]);
+                if (!result.getData().isEmpty()) {
+                    AppLocalApiClient.storeEmployees(Search.this, result.getData());
+                }
             } catch (Exception e) {
                 result = new Pagination<Employee>();
                 Log.e(TAG, e.getMessage(), e);

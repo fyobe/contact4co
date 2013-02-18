@@ -17,7 +17,7 @@
                 style="?android:buttonStyle"
                 android:id="@+id/spi_condition" android:layout_marginTop="2dp"/>
         <EditText
-                android:layout_width="220dp"
+                android:layout_width="190dp"
                 android:layout_height="40dp"
                 android:text=""
                 android:hint="查询条件"

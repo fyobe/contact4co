@@ -13,22 +13,11 @@ public class AppStart extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(login()){
-            redirectMain();
-        }  else {
-            redirectLogin();
-        }
+        redirectLogin();
     }
-    private boolean login(){
-         return false;
-    }
-    private void redirectLogin(){
+
+    private void redirectLogin() {
         Intent intent = new Intent(this, Login.class);
-        startActivity(intent);
-        finish();
-    }
-    private void redirectMain(){
-        Intent intent = new Intent(this, Search.class);
         startActivity(intent);
         finish();
     }

@@ -8,8 +8,10 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.vouov.ailk.app.R;
 import com.vouov.ailk.app.api.AppApiClient;
+import com.vouov.ailk.app.api.AppLocalApiClient;
 import com.vouov.ailk.app.model.Employee;
 
 /**
@@ -32,6 +34,8 @@ public class Detail extends BaseActivity {
 
     private ProgressDialog dialog;
 
+    private Employee employee;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.employee_detail);
@@ -46,7 +50,7 @@ public class Detail extends BaseActivity {
         parentEmployeeTextView = (TextView) findViewById(R.id.lbl_parent_employee);
         otherTextView = (TextView) findViewById(R.id.lbl_other);
         Intent intent = getIntent();
-        Employee employee = (Employee) intent.getSerializableExtra("p_employe");
+        employee = (Employee) intent.getSerializableExtra("p_employe");
         nameTextView.setText(employee.getName());
         idTextView.setText(employee.getId());
         accountTextView.setText(employee.getAccount());
@@ -62,6 +66,25 @@ public class Detail extends BaseActivity {
             parentEmployeeTextView.setText("");
         }
         otherTextView.setText(employee.getDesc());
+        try {
+            if (AppLocalApiClient.getEmployeeById(Detail.this, employee.getId()).isFavorite()) {
+                findViewById(R.id.btn_add_fav).setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.btn_add_fav).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //AppLocalApiClient.testTable(Detail.this);
+                        AppLocalApiClient.addFavorites(Detail.this, employee);
+                        findViewById(R.id.btn_add_fav).setVisibility(View.GONE);
+                        Toast.makeText(Detail.this, "成功添加本地收藏", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     private class EmployeeLinkDetailClickListener implements View.OnClickListener {
@@ -95,7 +118,13 @@ public class Detail extends BaseActivity {
                 protected Employee doInBackground(String... strings) {
                     Employee result = null;
                     try {
-                        result = AppApiClient.getEmployeeById(strings[0]);
+                        result = AppLocalApiClient.getEmployeeById(Detail.this, strings[0]);
+                        if (result == null) {
+                            result = AppApiClient.getEmployeeById(strings[0]);
+                            if (result != null) {
+                                AppLocalApiClient.storeEmployee(Detail.this, result);
+                            }
+                        }
                     } catch (Exception e) {
                         Log.e(TAG, e.getMessage(), e);
                     }
