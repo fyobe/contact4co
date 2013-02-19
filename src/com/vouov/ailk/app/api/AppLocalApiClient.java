@@ -90,7 +90,7 @@ public class AppLocalApiClient {
     }
 
     public static Employee getEmployeeById(Context context, String id) throws InstantiationException, IllegalAccessException {
-        SQLiteDatabase db = new EmployeeInfoDatabaseHelper(context).getWritableDatabase();
+        SQLiteDatabase db = new EmployeeInfoDatabaseHelper(context).getReadableDatabase();
         Cursor cursor = db.query(EmployeeInfoDatabase.Employee.TABLE_NAME, null,
                 EmployeeInfoDatabase.Employee.ID + "=?", new String[]{id}, null, null, null, " 1 ");
         List<Employee> employees = DBUtils.handleCursor(cursor, Employee.class);
@@ -99,10 +99,23 @@ public class AppLocalApiClient {
         return employees.isEmpty() ? null : employees.get(0);
     }
 
-    public static void testTable(Context context){
+    public static List<Employee> queryContacts(Context context, String columnName, String condition, int currentPage) throws Exception {
+        SQLiteDatabase db = new EmployeeInfoDatabaseHelper(context).getReadableDatabase();
+        String sql = null;
+        if (condition != null && !"".equals(condition.trim())) {
+            sql = columnName + " LIKE '%" + condition + "%' ";
+            Log.d(TAG, sql);
+        }
+        Cursor cursor = db.query(EmployeeInfoDatabase.Employee.TABLE_NAME, null,
+                sql, null, null, null, null, (currentPage - 1) * 20 + " , 20 ");
+        List<Employee> data = DBUtils.handleCursor(cursor, Employee.class);
+        return data;
+    }
+
+    public static void testTable(Context context) {
         SQLiteDatabase db = new EmployeeInfoDatabaseHelper(context).getWritableDatabase();
         Cursor cursor = db.query(EmployeeInfoDatabase.Employee.TABLE_NAME, null,
-               null,null, null, null, null,null);
+                null, null, null, null, null, null);
         printCursorInfo(cursor);
     }
 

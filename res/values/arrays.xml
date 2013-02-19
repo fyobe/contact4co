@@ -16,4 +16,12 @@
         <item>EI.ORG_NAME</item>
         <item>EI.OFFICE</item>
     </string-array>
+    <string-array name="local_condition_value">
+        <item>account</item>
+        <item>name</item>
+        <item>id</item>
+        <item>mobile</item>
+        <item>dept_name</item>
+        <item>office_phone</item>
+    </string-array>
 </resources>

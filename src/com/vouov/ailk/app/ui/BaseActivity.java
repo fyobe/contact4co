@@ -40,7 +40,10 @@ public abstract class BaseActivity extends Activity {
         }
         return super.onCreateOptionsMenu(menu);
     }
-
+    protected void favorite() {
+        Intent intent = new Intent(this, Favorite.class);
+        startActivity(intent);
+    }
     protected void settings() {
         Intent intent = new Intent(this, Setting.class);
         startActivity(intent);
@@ -56,6 +59,7 @@ public abstract class BaseActivity extends Activity {
         switch (item.getItemId()) {
             case R.id.menu_fav:
                 Log.d(TAG, "menu selected: fav");
+                favorite();
                 break;
             case R.id.menu_setting:
                 Log.d(TAG, "menu selected: setting");

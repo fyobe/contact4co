@@ -12,14 +12,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.Search"/>
-        <activity android:name=".ui.Login"/>
-        <activity android:name=".ui.Detail"/>
-        <activity android:name=".ui.About"/>
-        <activity android:name=".ui.Setting"/>
-        <activity android:name=".ui.Favorite"/>
-        <activity android:name=".ui.About"/>
-        <activity android:name=".ui.Feedback"/>
+        <activity android:name=".ui.Search" android:launchMode="singleInstance"/>
+        <activity android:name=".ui.Login"  android:launchMode="singleInstance"/>
+        <activity android:name=".ui.Detail" />
+        <activity android:name=".ui.About"  android:launchMode="singleInstance"/>
+        <activity android:name=".ui.Setting"  android:launchMode="singleInstance"/>
+        <activity android:name=".ui.Favorite"  android:launchMode="singleInstance"/>
+        <activity android:name=".ui.About"  android:launchMode="singleInstance"/>
+        <activity android:name=".ui.Feedback"  android:launchMode="singleInstance"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RESTART_PACKAGES"/>

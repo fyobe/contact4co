@@ -34,6 +34,7 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
     private String condition;
     private LinearLayout searchHeader;
 
+    private int lastPosition = 0;
     private boolean showSearchHeader = true;
     private Animation mShowAction = null;
     private Animation mHiddenAction = null;
@@ -41,6 +42,7 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
+        setTitle("员工信息查询");
         Spinner conditionSpinner = (Spinner) findViewById(R.id.spi_condition);
         conditionText = (EditText) findViewById(R.id.txt_condition);
         searchHeader = (LinearLayout) findViewById(R.id.search_header);
@@ -115,15 +117,16 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
             int firstVisibleItem = absListView.getFirstVisiblePosition();
             int visibleItemCount = absListView.getChildCount();
             int totalItemCount = absListView.getCount();
-            if (!showSearchHeader && firstVisibleItem == 0) {
+            if (!showSearchHeader && (lastPosition-firstVisibleItem) > 0) {
                 showSearchHeader = true;
                 searchHeader.startAnimation(mShowAction);
                 searchHeader.setVisibility(View.VISIBLE);
-            } else if (showSearchHeader && firstVisibleItem > 0) {
+            } else if (showSearchHeader && (lastPosition-firstVisibleItem) < 0) {
                 showSearchHeader = false;
                 searchHeader.startAnimation(mHiddenAction);
                 searchHeader.setVisibility(View.GONE);
             }
+            lastPosition = firstVisibleItem;
             // 判断是否滑动到底部
             if (firstVisibleItem + visibleItemCount == totalItemCount && !isCompleted && !isLoading && pagination != null) {
                 isLoading = true;
