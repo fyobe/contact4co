@@ -1,5 +1,6 @@
 package com.vouov.ailk.app.ui;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.vouov.ailk.app.model.Employee;
 import com.vouov.ailk.app.model.Pagination;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,7 +27,9 @@ import java.util.List;
  */
 public class Search extends BaseActivity implements AbsListView.OnScrollListener {
     private static final String TAG = "ailk_ui_search";
+    private Spinner conditionSpinner;
     private EditText conditionText;
+    private Button searchButton;
     private SearchResultAdapter listAdapter;
     private Pagination<Employee> pagination;
     private View footerView;
@@ -43,7 +47,7 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
         setTitle("员工信息查询");
-        Spinner conditionSpinner = (Spinner) findViewById(R.id.spi_condition);
+        conditionSpinner = (Spinner) findViewById(R.id.spi_condition);
         conditionText = (EditText) findViewById(R.id.txt_condition);
         searchHeader = (LinearLayout) findViewById(R.id.search_header);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -67,7 +71,7 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
 
             }
         });
-        Button searchButton = (Button) findViewById(R.id.btn_search);
+        searchButton = (Button) findViewById(R.id.btn_search);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,6 +111,30 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
         mHiddenAction.setDuration(500);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //判断是否需要自动查询
+        Intent intent = getIntent();
+        boolean autoQuery = intent.getBooleanExtra("auto_query", false);
+        if (autoQuery) {
+            columnName = intent.getStringExtra("column_name");
+            int spinnerPosition = Arrays.binarySearch(
+                    getResources().getStringArray(R.array.condition_value),
+                    columnName);
+            //set the default according to value
+            conditionSpinner.setSelection(spinnerPosition);
+            conditionText.setText(intent.getStringExtra("condition"));
+            searchButton.performClick();
+        }
+    }
+
     private boolean isLoading = false;
     private boolean isCompleted = false;
 
@@ -117,11 +145,11 @@ public class Search extends BaseActivity implements AbsListView.OnScrollListener
             int firstVisibleItem = absListView.getFirstVisiblePosition();
             int visibleItemCount = absListView.getChildCount();
             int totalItemCount = absListView.getCount();
-            if (!showSearchHeader && (lastPosition-firstVisibleItem) > 0) {
+            if (!showSearchHeader && (lastPosition - firstVisibleItem) > 0) {
                 showSearchHeader = true;
                 searchHeader.startAnimation(mShowAction);
                 searchHeader.setVisibility(View.VISIBLE);
-            } else if (showSearchHeader && (lastPosition-firstVisibleItem) < 0) {
+            } else if (showSearchHeader && (lastPosition - firstVisibleItem) < 0) {
                 showSearchHeader = false;
                 searchHeader.startAnimation(mHiddenAction);
                 searchHeader.setVisibility(View.GONE);

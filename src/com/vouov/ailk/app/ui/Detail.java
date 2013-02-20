@@ -65,6 +65,21 @@ public class Detail extends BaseActivity {
         } else {
             parentEmployeeTextView.setText("");
         }
+        if(employee.getDeptName()!=null && !"".equals(employee.getDeptName())){
+            deptNameTextView.setText(Html.fromHtml("<u>"+employee.getDeptName()+"</u>"));
+            deptNameTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(Detail.this, Search.class);
+                    i.putExtra("auto_query", true);
+                    i.putExtra("column_name", "EI.ORG_NAME");
+                    i.putExtra("condition", employee.getDeptName());
+                    Detail.this.startActivity(i);
+                }
+            });
+        }else {
+            deptNameTextView.setText("");
+        }
         otherTextView.setText(employee.getDesc());
         try {
             if (AppLocalApiClient.getEmployeeById(Detail.this, employee.getId()).isFavorite()) {

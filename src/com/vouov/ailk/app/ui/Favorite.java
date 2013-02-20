@@ -103,6 +103,9 @@ public class Favorite extends BaseActivity implements AbsListView.OnScrollListen
                 Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
                 -1.0f);
         mHiddenAction.setDuration(500);
+
+        //首次执行自动触发按钮
+        searchButton.performClick();
     }
 
     private boolean isLoading = false;
@@ -165,7 +168,7 @@ public class Favorite extends BaseActivity implements AbsListView.OnScrollListen
         protected List<Employee> doInBackground(Integer... integers) {
             List<Employee> data = null;
             try {
-                data = AppLocalApiClient.queryContacts(Favorite.this, columnName, condition, integers[0]);
+                data = AppLocalApiClient.queryFavoriteContacts(Favorite.this, columnName, condition, integers[0]);
                 /*data = new ArrayList<Employee>();
                 AppLocalApiClient.testTable(Favorite.this);*/
             } catch (Exception e) {

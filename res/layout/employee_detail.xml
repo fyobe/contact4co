@@ -88,7 +88,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="16dp"
-
+                            android:clickable="true"
                             android:text="CRM SRD-GZ Technical Architect Dept."
                             android:id="@+id/lbl_dept_name" android:layout_gravity="left|center_vertical"/>
                 </TableRow>

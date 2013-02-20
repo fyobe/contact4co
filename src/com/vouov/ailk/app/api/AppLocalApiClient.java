@@ -99,11 +99,11 @@ public class AppLocalApiClient {
         return employees.isEmpty() ? null : employees.get(0);
     }
 
-    public static List<Employee> queryContacts(Context context, String columnName, String condition, int currentPage) throws Exception {
+    public static List<Employee> queryFavoriteContacts(Context context, String columnName, String condition, int currentPage) throws Exception {
         SQLiteDatabase db = new EmployeeInfoDatabaseHelper(context).getReadableDatabase();
-        String sql = null;
+        String sql = EmployeeInfoDatabase.Employee.IS_FAVORITE+" = 1 ";
         if (condition != null && !"".equals(condition.trim())) {
-            sql = columnName + " LIKE '%" + condition + "%' ";
+            sql += " AND "+columnName + " LIKE '%" + condition + "%' ";
             Log.d(TAG, sql);
         }
         Cursor cursor = db.query(EmployeeInfoDatabase.Employee.TABLE_NAME, null,
