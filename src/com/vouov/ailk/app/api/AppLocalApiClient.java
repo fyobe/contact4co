@@ -1,13 +1,16 @@
 package com.vouov.ailk.app.api;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.vouov.ailk.app.db.EmployeeInfoDatabase;
 import com.vouov.ailk.app.db.EmployeeInfoDatabaseHelper;
 import com.vouov.ailk.app.model.Employee;
+import com.vouov.ailk.app.model.User;
 import com.vouov.ailk.app.util.DBUtils;
 
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ import java.util.List;
  */
 public class AppLocalApiClient {
     private static final String TAG = "ailk_local_api_client";
+    private final static String PREFERENCES_USER_INFO = "userinfo";
 
     public static void storeEmployee(Context context, Employee employee) throws IllegalAccessException, InstantiationException {
         List<Employee> data = new ArrayList<Employee>();
@@ -101,15 +105,38 @@ public class AppLocalApiClient {
 
     public static List<Employee> queryFavoriteContacts(Context context, String columnName, String condition, int currentPage) throws Exception {
         SQLiteDatabase db = new EmployeeInfoDatabaseHelper(context).getReadableDatabase();
-        String sql = EmployeeInfoDatabase.Employee.IS_FAVORITE+" = 1 ";
+        String sql = EmployeeInfoDatabase.Employee.IS_FAVORITE + " = 1 ";
         if (condition != null && !"".equals(condition.trim())) {
-            sql += " AND "+columnName + " LIKE '%" + condition + "%' ";
+            sql += " AND " + columnName + " LIKE '%" + condition + "%' ";
             Log.d(TAG, sql);
         }
         Cursor cursor = db.query(EmployeeInfoDatabase.Employee.TABLE_NAME, null,
                 sql, null, null, null, null, (currentPage - 1) * 20 + " , 20 ");
         List<Employee> data = DBUtils.handleCursor(cursor, Employee.class);
         return data;
+    }
+
+    public static User fetchUser(Context context) {
+        User user = null;
+        SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_USER_INFO, Activity.MODE_PRIVATE);
+        if (preferences != null) {
+            user = new User();
+            user.setUserName(preferences.getString("user_name", ""));
+            user.setPassword(preferences.getString("password", ""));
+            user.setRemember(preferences.getBoolean("remember", false));
+            user.setAutoLogin(preferences.getBoolean("auto_login", false));
+        }
+        return user;
+    }
+
+    public static void saveUser(Context context, User user) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_USER_INFO, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("user_name", user.getUserName());
+        editor.putString("password", user.getPassword());
+        editor.putBoolean("remember", user.isRemember());
+        editor.putBoolean("auto_login", user.isAutoLogin());
+        editor.commit();
     }
 
     public static void testTable(Context context) {

@@ -13,8 +13,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.vouov.ailk.app.R;
 import com.vouov.ailk.app.api.AppApiClient;
+import com.vouov.ailk.app.api.AppLocalApiClient;
 import com.vouov.ailk.app.common.AppApplication;
 import com.vouov.ailk.app.model.Employee;
+import com.vouov.ailk.app.model.User;
 
 /**
  * User: yuml
@@ -71,7 +73,19 @@ public class Login extends Activity {
                     protected void onPostExecute(Employee employee) {
                         super.onPostExecute(employee);
                         if (employee != null) {
-                            //TODO 保存登录信息
+                            User user = new User();
+                            if (rememberCheckBox.isChecked()) {
+                                user.setUserName(account);
+                                user.setPassword(password);
+                                user.setRemember(true);
+                                user.setAutoLogin(autoSubmitCheckBox.isChecked());
+                            } else {
+                                user.setUserName(account);
+                                user.setPassword("");
+                                user.setRemember(false);
+                                user.setAutoLogin(false);
+                            }
+                            AppLocalApiClient.saveUser(Login.this, user);
                             AppApplication appApplication = (AppApplication) Login.this.getApplication();
                             appApplication.setUserName(account);
                             appApplication.setPassword(password);
@@ -102,6 +116,15 @@ public class Login extends Activity {
         });
 
         //值回填和自动登录判断
-        submitButton.performClick();
+        User user = AppLocalApiClient.fetchUser(this);
+        if (user != null) {
+            accountText.setText(user.getUserName());
+            passwordText.setText(user.getPassword());
+            rememberCheckBox.setChecked(user.isRemember());
+            autoSubmitCheckBox.setChecked(user.isAutoLogin());
+            if (user.isAutoLogin()) {
+                submitButton.performClick();
+            }
+        }
     }
 }

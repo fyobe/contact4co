@@ -13,8 +13,6 @@ public class AppApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        setUserName("ailk\\yuml");
-//        setPassword("Long1234");
         AppApiClient.init(this);
     }
 
