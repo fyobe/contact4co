@@ -18,6 +18,9 @@ import com.vouov.ailk.app.common.AppApplication;
 import com.vouov.ailk.app.model.Employee;
 import com.vouov.ailk.app.model.User;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * User: yuml
  * Date: 13-1-17
@@ -32,8 +35,10 @@ public class Login extends Activity {
 
     private String account;
     private String password;
+    private boolean isAutoLogin = false;
 
     private ProgressDialog dialog;
+    private User storedUser;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,11 +84,14 @@ public class Login extends Activity {
                                 user.setPassword(password);
                                 user.setRemember(true);
                                 user.setAutoLogin(autoSubmitCheckBox.isChecked());
+                                if (!isAutoLogin) user.setLastUpdateTime(new Date());
+                                else user.setLastUpdateTime(storedUser.getLastUpdateTime());
                             } else {
                                 user.setUserName(account);
                                 user.setPassword("");
                                 user.setRemember(false);
                                 user.setAutoLogin(false);
+                                user.setLastUpdateTime(new Date());
                             }
                             AppLocalApiClient.saveUser(Login.this, user);
                             AppApplication appApplication = (AppApplication) Login.this.getApplication();
@@ -116,14 +124,25 @@ public class Login extends Activity {
         });
 
         //值回填和自动登录判断
-        User user = AppLocalApiClient.fetchUser(this);
-        if (user != null) {
-            accountText.setText(user.getUserName());
-            passwordText.setText(user.getPassword());
-            rememberCheckBox.setChecked(user.isRemember());
-            autoSubmitCheckBox.setChecked(user.isAutoLogin());
-            if (user.isAutoLogin()) {
+        storedUser = AppLocalApiClient.fetchUser(this);
+        if (storedUser != null) {
+            accountText.setText(storedUser.getUserName());
+            passwordText.setText(storedUser.getPassword());
+            rememberCheckBox.setChecked(storedUser.isRemember());
+            autoSubmitCheckBox.setChecked(storedUser.isAutoLogin());
+            //如果大于一个星期就不能自动登录
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DATE, -7);
+            Date refDate = calendar.getTime();
+            if (storedUser.isAutoLogin() && refDate.before(storedUser.getLastUpdateTime())) {
+                isAutoLogin = true;
                 submitButton.performClick();
+            } else {
+                isAutoLogin = false;
+                if (refDate.before(storedUser.getLastUpdateTime())) {
+                    passwordText.setText("");
+                    Toast.makeText(Login.this, "保存信息已经超过一个星期需要重新验证", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

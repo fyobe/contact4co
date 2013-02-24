@@ -1,5 +1,7 @@
 package com.vouov.ailk.app.model;
 
+import java.util.Date;
+
 /**
  * User: yuml
  * Date: 13-2-24
@@ -10,6 +12,7 @@ public class User {
     private String password;
     private boolean remember;
     private boolean autoLogin;
+    private Date lastUpdateTime;
 
     public String getUserName() {
         return userName;
@@ -41,5 +44,13 @@ public class User {
 
     public void setAutoLogin(boolean autoLogin) {
         this.autoLogin = autoLogin;
+    }
+
+    public Date getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(Date lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
     }
 }

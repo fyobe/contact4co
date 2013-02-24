@@ -125,6 +125,7 @@ public class AppLocalApiClient {
             user.setPassword(preferences.getString("password", ""));
             user.setRemember(preferences.getBoolean("remember", false));
             user.setAutoLogin(preferences.getBoolean("auto_login", false));
+            user.setLastUpdateTime(new Date(preferences.getLong("last_update_time", 0)));
         }
         return user;
     }
@@ -136,6 +137,7 @@ public class AppLocalApiClient {
         editor.putString("password", user.getPassword());
         editor.putBoolean("remember", user.isRemember());
         editor.putBoolean("auto_login", user.isAutoLogin());
+        editor.putLong("last_update_time", user.getLastUpdateTime().getTime());
         editor.commit();
     }
 
