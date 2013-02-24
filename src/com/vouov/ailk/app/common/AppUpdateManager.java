@@ -2,8 +2,13 @@ package com.vouov.ailk.app.common;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import com.vouov.ailk.app.api.AppApiClient;
 import com.vouov.ailk.app.model.AppInfo;
+import com.vouov.ailk.app.task.ApkDownloadTask;
+import com.vouov.ailk.app.util.FileUtils;
 
 import java.io.File;
 
@@ -14,8 +19,12 @@ import java.io.File;
  */
 public class AppUpdateManager {
     private static AppUpdateManager instance = new AppUpdateManager();
+    private Context context;
+    public final static String UPDATE_URL = "http://yuminglong.github.com/blog/update/update_info.json";
+    private final static String LOCAL_APK_URL = "/vouov/AilkContact.apk";
 
-    public static AppUpdateManager getInstance() {
+    public static AppUpdateManager getInstance(Context context) {
+        instance.context = context;
         return instance;
     }
 
@@ -23,19 +32,42 @@ public class AppUpdateManager {
     }
 
     public AppInfo getVersion() {
-        return null;
+        AppInfo appInfo = null;
+        PackageManager packageManager = this.context.getPackageManager();
+        // getPackageName()是你当前类的包名，0代表是获取版本信息
+        PackageInfo packInfo = null;
+        try {
+            appInfo = new AppInfo();
+            packInfo = packageManager.getPackageInfo(this.context.getPackageName(), 0);
+            appInfo.setVersionCode(packInfo.versionCode);
+            appInfo.setVersionName(packInfo.versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return appInfo;
     }
 
-    public void update(Context context, boolean isShowMsg) {
-
+    public void update(boolean isShowMsg){
+        AppInfo currentAppInfo = getVersion();
+        AppInfo updateAppInfo = AppApiClient.updateAppInfo();
+        if (updateAppInfo.getVersionCode() > currentAppInfo.getVersionCode()) {
+            File downloadApk = download(updateAppInfo);
+            install(downloadApk);
+        }
     }
 
-    public void download(Context context) {
-
+    public File download(AppInfo appInfo) {
+        File saveFile = null;
+        if (appInfo != null) {
+            String url = appInfo.getDownloadUrl();
+            saveFile = FileUtils.getSDFile(LOCAL_APK_URL);
+            new ApkDownloadTask(this.context, url, saveFile).execute();
+        }
+        return saveFile;
     }
 
-    public void install(Context context, File apkFile) {
-        if (!apkFile.exists()) {
+    public void install(File apkFile) {
+        if (apkFile == null || !apkFile.exists()) {
             return;
         }
         Intent intent = new Intent(Intent.ACTION_VIEW);

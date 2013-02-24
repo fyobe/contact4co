@@ -10,6 +10,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -69,6 +70,16 @@ public class HttpUtil {
             httpClient.getConnectionManager().shutdown();
         }
 
+    }
+
+    public static String get(HttpClient httpClient, String url) throws IOException, AppException {
+        try {
+            HttpGet get = new HttpGet(url);
+            HttpResponse response = httpClient.execute(get);
+            return handleHttpResponse(response);
+        } finally {
+            httpClient.getConnectionManager().shutdown();
+        }
     }
 
 }

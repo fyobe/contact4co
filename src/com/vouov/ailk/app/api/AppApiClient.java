@@ -2,12 +2,15 @@ package com.vouov.ailk.app.api;
 
 import android.util.Log;
 import com.vouov.ailk.app.common.AppApplication;
+import com.vouov.ailk.app.common.AppUpdateManager;
+import com.vouov.ailk.app.model.AppInfo;
 import com.vouov.ailk.app.model.Employee;
 import com.vouov.ailk.app.model.Pagination;
 import com.vouov.ailk.app.util.HttpUtil;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,7 @@ public class AppApiClient {
 
     public static Employee login(String userName, String password) throws Exception {
         String sql = " WHERE 1 = 1  AND upper(EI.NT_ACCOUNT) = '" + userName + "' ";
-        return selectEmployee(HttpUtil.getHttpClient("ailk\\"+userName, password), sql);
+        return selectEmployee(HttpUtil.getHttpClient("ailk\\" + userName, password), sql);
     }
 
     public static Employee getEmployeeById(String id) throws Exception {
@@ -53,7 +56,7 @@ public class AppApiClient {
         EI.NT_ACCOUNT	NT域帐号
         EI.ORG_NAME	部门名称
         */
-        String sql = " WHERE 1 = 1  AND upper("+columnName+") LIKE '%" + condition + "%' ";
+        String sql = " WHERE 1 = 1  AND upper(" + columnName + ") LIKE '%" + condition + "%' ";
         Log.d(TAG, sql);
         String result = requestContactResource(HttpUtil.getHttpClient(appApplication), sql, currentPage);
         List<Employee> data = parseEmployees(result);
@@ -112,5 +115,20 @@ public class AppApiClient {
             totalPage = Integer.parseInt(value);
         }
         return totalPage;
+    }
+
+    public static AppInfo updateAppInfo() {
+        AppInfo appInfo = null;
+        try {
+            String updateJson = HttpUtil.get(HttpUtil.getHttpClient(), AppUpdateManager.UPDATE_URL);
+            JSONObject result = new JSONObject(updateJson);
+            appInfo = new AppInfo();
+            appInfo.setVersionCode(result.getInt("version_code"));
+            appInfo.setVersionName(result.getString("version_name"));
+            appInfo.setDownloadUrl(result.getString("download_url"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return appInfo;
     }
 }

@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">亚信通讯录</string>
     <string name="copyright_en">Copyright \u00A9 AsiaInfo-Linkage. \n All Rights Reserved.</string>
+    <string name="version_name">v1.0 beta</string>
 </resources>

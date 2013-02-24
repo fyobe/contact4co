@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TableRow;
 import com.vouov.ailk.app.R;
-import com.vouov.ailk.app.task.ApkDownloadTask;
-import com.vouov.ailk.app.util.FileUtils;
-
-import java.io.File;
+import com.vouov.ailk.app.common.AppUpdateManager;
 
 /**
  * User: yuml
@@ -28,9 +25,8 @@ public class Setting extends BaseActivity {
             @Override
             public void onClick(View view) {
                 //启动更新任务
-                String url = "http://softfile.3g.qq.com/msoft/179/24659/85642/qqhd_mini2013_v2.2.apk";
-                File saveFile = FileUtils.getSDFile("/vouov/AilkContact.apk");
-                new ApkDownloadTask(Setting.this, url, saveFile).execute();
+                AppUpdateManager updateManager = AppUpdateManager.getInstance(Setting.this);
+                updateManager.update(true);
             }
         });
         aboutRow = (TableRow) findViewById(R.id.menu_about);

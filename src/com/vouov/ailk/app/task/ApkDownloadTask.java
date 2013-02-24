@@ -18,6 +18,6 @@ public class ApkDownloadTask extends FileDownloadTask {
     @Override
     protected void onPostExecute(File file) {
         super.onPostExecute(file);
-        if (!this.isCancelled() && mSaveFile.exists()) AppUpdateManager.getInstance().install(mContext, mSaveFile);
+        if (!this.isCancelled() && mSaveFile.exists()) AppUpdateManager.getInstance(mContext).install(mSaveFile);
     }
 }
