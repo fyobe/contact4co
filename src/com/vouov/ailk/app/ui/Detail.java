@@ -2,11 +2,13 @@ package com.vouov.ailk.app.ui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.vouov.ailk.app.R;
@@ -32,9 +34,13 @@ public class Detail extends BaseActivity {
     private TextView parentEmployeeTextView;
     private TextView otherTextView;
 
+    private Button addFavButton;
+
     private ProgressDialog dialog;
 
     private Employee employee;
+
+    private boolean isFavorite = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +71,8 @@ public class Detail extends BaseActivity {
         } else {
             parentEmployeeTextView.setText("");
         }
-        if(employee.getDeptName()!=null && !"".equals(employee.getDeptName())){
-            deptNameTextView.setText(Html.fromHtml("<u>"+employee.getDeptName()+"</u>"));
+        if (employee.getDeptName() != null && !"".equals(employee.getDeptName())) {
+            deptNameTextView.setText(Html.fromHtml("<u>" + employee.getDeptName() + "</u>"));
             deptNameTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -77,24 +83,41 @@ public class Detail extends BaseActivity {
                     Detail.this.startActivity(i);
                 }
             });
-        }else {
+        } else {
             deptNameTextView.setText("");
         }
         otherTextView.setText(employee.getDesc());
         try {
-            if (AppLocalApiClient.getEmployeeById(Detail.this, employee.getId()).isFavorite()) {
-                findViewById(R.id.btn_add_fav).setVisibility(View.GONE);
-            } else {
-                findViewById(R.id.btn_add_fav).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //AppLocalApiClient.testTable(Detail.this);
-                        AppLocalApiClient.addFavorites(Detail.this, employee);
-                        findViewById(R.id.btn_add_fav).setVisibility(View.GONE);
-                        Toast.makeText(Detail.this, "成功添加本地收藏", Toast.LENGTH_LONG).show();
-                    }
-                });
+            addFavButton = (Button) findViewById(R.id.btn_add_fav);
+            isFavorite = AppLocalApiClient.getEmployeeById(Detail.this, employee.getId()).isFavorite();
+            if (isFavorite) {
+                addFavButton.setText("取消收藏");
+                Drawable img = getResources().getDrawable( R.drawable.stop );
+                addFavButton.setCompoundDrawablesWithIntrinsicBounds( img, null, null, null );
             }
+            addFavButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        isFavorite = AppLocalApiClient.getEmployeeById(Detail.this, employee.getId()).isFavorite();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (!isFavorite) {
+                        AppLocalApiClient.addFavorites(Detail.this, employee);
+                        addFavButton.setText("取消收藏");
+                        Drawable img = getResources().getDrawable( R.drawable.stop );
+                        addFavButton.setCompoundDrawablesWithIntrinsicBounds( img, null, null, null );
+                        Toast.makeText(Detail.this, "成功添加本地收藏", Toast.LENGTH_LONG).show();
+                    } else {
+                        AppLocalApiClient.removeFavorites(Detail.this, employee);
+                        addFavButton.setText("收藏本地");
+                        Drawable img = getResources().getDrawable( R.drawable.star );
+                        addFavButton.setCompoundDrawablesWithIntrinsicBounds( img, null, null, null );
+                        Toast.makeText(Detail.this, "成功取消本地收藏", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

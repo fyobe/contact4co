@@ -134,14 +134,21 @@ public class Login extends Activity {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.DATE, -7);
             Date refDate = calendar.getTime();
-            if (storedUser.isAutoLogin() && refDate.before(storedUser.getLastUpdateTime())) {
-                isAutoLogin = true;
-                submitButton.performClick();
-            } else {
-                isAutoLogin = false;
-                if (refDate.before(storedUser.getLastUpdateTime())) {
+            if (storedUser.isAutoLogin()) {
+                if(refDate.before(storedUser.getLastUpdateTime())){
+                    isAutoLogin = true;
+                    submitButton.performClick();
+                }else {
+                    isAutoLogin = false;
                     passwordText.setText("");
                     Toast.makeText(Login.this, "保存信息已经超过一个星期需要重新验证", Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                isAutoLogin = false;
+                if (storedUser.isRemember() && refDate.after(storedUser.getLastUpdateTime())) {
+                    passwordText.setText("");
+                    Toast.makeText(Login.this, "保存信息已经超过一个星期需要重新输入密码", Toast.LENGTH_SHORT).show();
                 }
             }
         }

@@ -93,6 +93,15 @@ public class AppLocalApiClient {
         db.close();
     }
 
+    public static void removeFavorites(Context context, Employee employee) {
+        SQLiteDatabase db = new EmployeeInfoDatabaseHelper(context).getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(EmployeeInfoDatabase.Employee.IS_FAVORITE, false);
+        db.update(EmployeeInfoDatabase.Employee.TABLE_NAME, contentValues,
+                EmployeeInfoDatabase.Employee.ID + "=?", new String[]{employee.getId()});
+        db.close();
+    }
+
     public static Employee getEmployeeById(Context context, String id) throws InstantiationException, IllegalAccessException {
         SQLiteDatabase db = new EmployeeInfoDatabaseHelper(context).getReadableDatabase();
         Cursor cursor = db.query(EmployeeInfoDatabase.Employee.TABLE_NAME, null,

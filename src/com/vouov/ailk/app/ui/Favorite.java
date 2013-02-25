@@ -72,16 +72,13 @@ public class Favorite extends BaseActivity implements AbsListView.OnScrollListen
             @Override
             public void onClick(View view) {
                 String text = conditionText.getText().toString();
-
-                if (!text.equals(condition) || !columnName.equals(lastColumnName)) {
-                    isLoading = true;
-                    lastColumnName = columnName;
-                    condition = text;
-                    listAdapter.getEmployees().clear();
-                    listAdapter.notifyDataSetChanged();
-                    page = 1;
-                    new EmployeeQueryTask().execute(page);
-                }
+                isLoading = true;
+                lastColumnName = columnName;
+                condition = text;
+                listAdapter.getEmployees().clear();
+                listAdapter.notifyDataSetChanged();
+                page = 1;
+                new EmployeeQueryTask().execute(page);
 
             }
         });
@@ -118,11 +115,11 @@ public class Favorite extends BaseActivity implements AbsListView.OnScrollListen
             int firstVisibleItem = absListView.getFirstVisiblePosition();
             int visibleItemCount = absListView.getChildCount();
             int totalItemCount = absListView.getCount();
-            if (!showSearchHeader && (lastPosition-firstVisibleItem) > 0) {
+            if (!showSearchHeader && (lastPosition - firstVisibleItem) > 0) {
                 showSearchHeader = true;
                 searchHeader.startAnimation(mShowAction);
                 searchHeader.setVisibility(View.VISIBLE);
-            } else if (showSearchHeader && (lastPosition-firstVisibleItem) < 0) {
+            } else if (showSearchHeader && (lastPosition - firstVisibleItem) < 0) {
                 showSearchHeader = false;
                 searchHeader.startAnimation(mHiddenAction);
                 searchHeader.setVisibility(View.GONE);
