@@ -1,11 +1,10 @@
 package com.vouov.ailk.app.api;
 
 import android.app.Activity;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.ContactsContract;
 import android.util.Log;
 import com.vouov.ailk.app.db.EmployeeInfoDatabase;
 import com.vouov.ailk.app.db.EmployeeInfoDatabaseHelper;
@@ -180,5 +179,94 @@ public class AppLocalApiClient {
             c.moveToNext();
         }
         Log.i(TAG, "*** Cursor End ***");
+    }
+    //是否存在相应的号码
+    public static boolean hasContact(Context context, String mobile){
+        ContentResolver resolver = context.getContentResolver();
+        Cursor cursor = context.getContentResolver().query(
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                null,    // Which columns to return.
+                ContactsContract.CommonDataKinds.Phone.NUMBER + " = ? ", // WHERE clause.
+                new String[]{mobile},          // WHERE clause value substitution
+                null);   // Sort order.
+        int count =  cursor.getCount();
+        Log.d(TAG, "getPeople cursor.getCount() = " +count);
+        cursor.close();
+        if(count>0) return true;
+        else return false;
+    }
+    //添加联系人
+    public static void addEmployee2Contact(Context context, Employee employee){
+        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+
+        //在名片表插入一个新名片
+        ops.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
+                .withValue(ContactsContract.RawContacts._ID, 0)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
+                .withValue(ContactsContract.RawContacts.AGGREGATION_MODE, ContactsContract.RawContacts.AGGREGATION_MODE_DISABLED)
+                .build());
+
+        // add name
+        //添加一条新名字记录；对应RAW_CONTACT_ID为0的名片
+        if (employee.getName() != null && !"".equals(employee.getName())) {
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                    .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, employee.getName())
+                    .build());
+        }
+        // add company
+
+        ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.Organization.COMPANY, "亚信联创")
+                .withValue(ContactsContract.CommonDataKinds.Organization.TYPE, ContactsContract.CommonDataKinds.Organization.TYPE_WORK)
+                .build());
+
+        // add phone
+        if (employee.getMobile() != null && !"".equals(employee.getMobile())) {
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                    .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, employee.getMobile())
+                    .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, 1)
+                    .build());
+        }
+
+
+        // add email
+        if (employee.getEmail() != null && !"".equals(employee.getEmail())) {
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)
+                    .withValue(ContactsContract.CommonDataKinds.Email.DATA, employee.getEmail())
+                    .withValue(ContactsContract.CommonDataKinds.Email.TYPE, 1)
+                    .build());
+        }
+        // add logo image
+        // Bitmap bm = logo;
+        // if (bm != null) {
+        // ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        // bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        // byte[] photo = baos.toByteArray();
+        // if (photo != null) {
+        //
+        // ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+        // .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+        // .withValue(ContactsContract.Data.MIMETYPE,
+        // ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
+        // .withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, photo)
+        // .build());
+        // }
+        // }
+
+        try {
+            context.getContentResolver().applyBatch(
+                    ContactsContract.AUTHORITY, ops);
+        } catch (Exception e) {
+        }
+
     }
 }

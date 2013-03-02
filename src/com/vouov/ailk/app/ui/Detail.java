@@ -35,6 +35,7 @@ public class Detail extends BaseActivity {
     private TextView otherTextView;
 
     private Button addFavButton;
+    private Button addContactButton;
 
     private ProgressDialog dialog;
 
@@ -122,6 +123,22 @@ public class Detail extends BaseActivity {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        }
+
+        addContactButton = (Button) findViewById(R.id.btn_add_contact_book);
+        if(employee.getMobile()==null
+                || "".equals(employee.getMobile())
+                ||AppLocalApiClient.hasContact(this, employee.getMobile())){
+            addContactButton.setVisibility(View.GONE);
+        } else {
+            addContactButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AppLocalApiClient.addEmployee2Contact(Detail.this, employee);
+                    addContactButton.setVisibility(View.GONE);
+                    Toast.makeText(Detail.this, "成功添加到本地通讯薄", Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 

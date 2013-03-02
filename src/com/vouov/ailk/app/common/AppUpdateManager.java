@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.widget.Toast;
 import com.vouov.ailk.app.api.AppApiClient;
 import com.vouov.ailk.app.model.AppInfo;
 import com.vouov.ailk.app.task.ApkDownloadTask;
@@ -53,6 +54,8 @@ public class AppUpdateManager {
         if (updateAppInfo.getVersionCode() > currentAppInfo.getVersionCode()) {
             File downloadApk = download(updateAppInfo);
             install(downloadApk);
+        }else {
+            Toast.makeText(this.context, "此应用已经是最新版本", Toast.LENGTH_LONG).show();
         }
     }
 

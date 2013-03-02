@@ -9,7 +9,7 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="亚信通讯录2013"
+            android:text="亚联通讯录2013"
             android:textSize="20dp"/>
     <TextView
             android:layout_width="wrap_content"
